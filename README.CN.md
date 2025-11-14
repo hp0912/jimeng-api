@@ -30,7 +30,7 @@
 现在通过`ratio`和`resolution`两个参数来共同控制图像尺寸，这提供了更高的灵活性。程序内`resolution`默认设置为`2k`。
 
 ```bash
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -76,7 +76,7 @@ curl -X POST http://localhost:5100/v1/images/generations \
 ```bash
 docker run -d \
   --name jimeng-api \
-  -p 5100:5100 \
+  -p 9000:9000 \
   --restart unless-stopped \
   ghcr.io/iptag/jimeng-api:latest
 ```
@@ -118,7 +118,7 @@ docker build -t jimeng-api .
 
 docker run -d \
   --name jimeng-api \
-  -p 5100:5100 \
+  -p 9000:9000 \
   --restart unless-stopped \
   jimeng-api
 ```
@@ -142,7 +142,7 @@ docker exec -it jimeng-api sh
 - ✅ **多阶段构建**：优化镜像大小（170MB）
 - ✅ **非root用户**：增强安全性（jimeng用户）
 - ✅ **健康检查**：自动监控服务状态
-- ✅ **统一端口**：容器内外均使用5100端口
+- ✅ **统一端口**：容器内外均使用9000端口
 - ✅ **日志管理**：结构化日志输出
 
 ### 配置说明
@@ -151,7 +151,7 @@ docker exec -it jimeng-api sh
 ```yaml
 name: jimeng-api
 route: src/api/routes/index.ts
-port: 5100
+port: 9000
 ```
 
 #### `configs/dev/system.yml`
@@ -178,7 +178,7 @@ log_level: info # 日志级别: error, warning, info(默认), debug
 
 ```bash
 # 默认参数（ratio: "1:1", resolution: "2k"）
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -187,7 +187,7 @@ curl -X POST http://localhost:5100/v1/images/generations \
   }'
 
 # 使用4K分辨率的示例
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -246,7 +246,7 @@ curl -X POST http://localhost:5100/v1/images/generations \
 # 美国站使用 "us-YOUR_SESSION_ID"
 # 香港站使用 "hk-YOUR_SESSION_ID"
 # 日本站使用 "jp-YOUR_SESSION_ID"
-curl -X POST http://localhost:5100/v1/images/compositions \
+curl -X POST http://localhost:9000/v1/images/compositions \
   -H "Authorization: Bearer us-YOUR_SESSION_ID" \
   -F "prompt=A cute cat, anime style" \
   -F "model=jimeng-4.0" \
@@ -273,7 +273,7 @@ curl -X POST http://localhost:5100/v1/images/compositions \
 
 ```bash
 # 示例1: URL图片风格转换 (使用application/json)
-curl -X POST http://localhost:5100/v1/images/compositions \
+curl -X POST http://localhost:9000/v1/images/compositions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -286,7 +286,7 @@ curl -X POST http://localhost:5100/v1/images/compositions \
   }'
 
 # 示例2: 本地单文件上传 (使用multipart/form-data)
-curl -X POST http://localhost:5100/v1/images/compositions \
+curl -X POST http://localhost:9000/v1/images/compositions \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -F "prompt=一只可爱的猫，动漫风格" \
   -F "model=jimeng-4.0" \
@@ -295,7 +295,7 @@ curl -X POST http://localhost:5100/v1/images/compositions \
   -F "images=@/path/to/your/local/cat.jpg"
 
 # 示例3: 本地多文件上传 (使用multipart/form-data)
-curl -X POST http://localhost:5100/v1/images/compositions \
+curl -X POST http://localhost:9000/v1/images/compositions \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -F "prompt=融合这两张图片" \
   -F "model=jimeng-4.0" \
@@ -380,7 +380,7 @@ A: 可以。现在支持直接上传本地文件。请参考上方的“本地�
 
 ```bash
 # 示例1: 文生视频（0张图片） - 纯文本生成
-curl -X POST http://localhost:5100/v1/videos/generations \
+curl -X POST http://localhost:9000/v1/videos/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -392,7 +392,7 @@ curl -X POST http://localhost:5100/v1/videos/generations \
   }'
 
 # 示例2: 图生视频（1张图片） - 单张图片作为首帧
-curl -X POST http://localhost:5100/v1/videos/generations \
+curl -X POST http://localhost:9000/v1/videos/generations \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -F "prompt=一个男人在说话" \
   -F "model=jimeng-video-3.0" \
@@ -401,7 +401,7 @@ curl -X POST http://localhost:5100/v1/videos/generations \
   -F "image_file_1=@/path/to/your/first-frame.png"
 
 # 示例3: 首尾帧视频（2张图片） - 两张图片分别作为首帧和尾帧
-curl -X POST http://localhost:5100/v1/videos/generations \
+curl -X POST http://localhost:9000/v1/videos/generations \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -F "prompt=场景之间的平滑过渡" \
   -F "model=jimeng-video-3.0" \
@@ -411,7 +411,7 @@ curl -X POST http://localhost:5100/v1/videos/generations \
   -F "image_file_2=@/path/to/last-frame.png"
 
 # 示例4: 使用网络图片的图生视频
-curl -X POST http://localhost:5100/v1/videos/generations \
+curl -X POST http://localhost:9000/v1/videos/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -429,7 +429,7 @@ curl -X POST http://localhost:5100/v1/videos/generations \
 **POST** `/v1/chat/completions`
 
 ```bash
-curl -X POST http://localhost:5100/v1/chat/completions \
+curl -X POST http://localhost:9000/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{

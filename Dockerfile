@@ -57,17 +57,17 @@ RUN mkdir -p /app/logs /app/tmp && \
     chown -R jimeng:nodejs /app/logs /app/tmp
 
 # 设置环境变量
-ENV SERVER_PORT=5100
+ENV SERVER_PORT=9000
 
 # 切换到非root用户
 USER jimeng
 
 # 暴露端口
-EXPOSE 5100
+EXPOSE 9000
 
 # 健康检查
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
-    CMD wget -q --spider http://localhost:5100/ping
+    CMD wget -q --spider http://localhost:9000/ping
 
 # 启动应用
 CMD ["yarn", "start"]

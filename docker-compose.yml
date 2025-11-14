@@ -7,14 +7,14 @@ services:
     container_name: jimeng-api
     restart: unless-stopped
     ports:
-      - "5100:5100"
+      - "9000:9000"
     #volumes:
     #  # 挂载日志目录（确保权限正确）
     #  - ./logs:/app/logs
     #  # 挂载临时目录
     #  - ./tmp:/app/tmp
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5100/ping"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9000/ping"]
       interval: 15s
       timeout: 5s
       retries: 3
