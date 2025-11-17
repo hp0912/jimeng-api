@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import Request from "@/lib/request/Request.ts";
 import { generateImages, generateImageComposition } from "@/api/controllers/images.ts";
+import { DEFAULT_IMAGE_MODEL } from "@/api/consts/common.ts";
 import { tokenSplit } from "@/api/controllers/core.ts";
 import util from "@/lib/util.ts";
 
@@ -25,6 +26,7 @@ export default {
         .validate("body.negative_prompt", v => _.isUndefined(v) || _.isString(v))
         .validate("body.ratio", v => _.isUndefined(v) || _.isString(v))
         .validate("body.resolution", v => _.isUndefined(v) || _.isString(v))
+        .validate("body.intelligent_ratio", v => _.isUndefined(v) || _.isBoolean(v))
         .validate("body.sample_strength", v => _.isUndefined(v) || _.isFinite(v))
         .validate("body.response_format", v => _.isUndefined(v) || _.isString(v))
         .validate("headers.authorization", _.isString);
@@ -37,16 +39,19 @@ export default {
         negative_prompt: negativePrompt,
         ratio,
         resolution,
+        intelligent_ratio: intelligentRatio,
         sample_strength: sampleStrength,
         response_format,
       } = request.body;
+      const finalModel = _.defaultTo(model, DEFAULT_IMAGE_MODEL);
 
       const responseFormat = _.defaultTo(response_format, "url");
-      const imageUrls = await generateImages(model, prompt, {
+      const imageUrls = await generateImages(finalModel, prompt, {
         ratio,
         resolution,
         sampleStrength,
         negativePrompt,
+        intelligentRatio,
       }, token);
       let data = [];
       if (responseFormat == "b64_json") {
@@ -83,6 +88,7 @@ export default {
           .validate("body.negative_prompt", v => _.isUndefined(v) || _.isString(v))
           .validate("body.ratio", v => _.isUndefined(v) || _.isString(v))
           .validate("body.resolution", v => _.isUndefined(v) || _.isString(v))
+          .validate("body.intelligent_ratio", v => _.isUndefined(v) || (typeof v === 'string' && (v === 'true' || v === 'false')) || _.isBoolean(v))
           .validate("body.sample_strength", v => _.isUndefined(v) || (typeof v === 'string' && !isNaN(parseFloat(v))) || _.isFinite(v))
           .validate("body.response_format", v => _.isUndefined(v) || _.isString(v))
           .validate("headers.authorization", _.isString);
@@ -94,6 +100,7 @@ export default {
           .validate("body.negative_prompt", v => _.isUndefined(v) || _.isString(v))
           .validate("body.ratio", v => _.isUndefined(v) || _.isString(v))
           .validate("body.resolution", v => _.isUndefined(v) || _.isString(v))
+          .validate("body.intelligent_ratio", v => _.isUndefined(v) || _.isBoolean(v))
           .validate("body.sample_strength", v => _.isUndefined(v) || _.isFinite(v))
           .validate("body.response_format", v => _.isUndefined(v) || _.isString(v))
           .validate("headers.authorization", _.isString);
@@ -141,21 +148,28 @@ export default {
         negative_prompt: negativePrompt,
         ratio,
         resolution,
+        intelligent_ratio: intelligentRatio,
         sample_strength: sampleStrength,
         response_format,
       } = request.body;
+      const finalModel = _.defaultTo(model, DEFAULT_IMAGE_MODEL);
 
-      // 如果是 multipart/form-data，需要将字符串转换为数字
+      // 如果是 multipart/form-data，需要将字符串转换为数字和布尔值
       const finalSampleStrength = isMultiPart && typeof sampleStrength === 'string'
         ? parseFloat(sampleStrength)
         : sampleStrength;
 
+      const finalIntelligentRatio = isMultiPart && typeof intelligentRatio === 'string'
+        ? intelligentRatio === 'true'
+        : intelligentRatio;
+
       const responseFormat = _.defaultTo(response_format, "url");
-      const resultUrls = await generateImageComposition(model, prompt, images, {
+      const resultUrls = await generateImageComposition(finalModel, prompt, images, {
         ratio,
         resolution,
         sampleStrength: finalSampleStrength,
         negativePrompt,
+        intelligentRatio: finalIntelligentRatio,
       }, token);
 
       let data = [];

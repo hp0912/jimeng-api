@@ -161,6 +161,54 @@ debug: false
 log_level: info # 日志级别: error, warning, info(默认), debug
 ```
 
+## 🤖 Claude Code Skill
+
+本项目提供了一个专用的 Claude Code Skill,方便在 Claude Code 中快速调用即梦API生成图片。
+
+### 功能特性
+
+- 🎯 **快速生成**: 直接在对话中使用即梦API生成图片
+- 📁 **自动保存**: 生成的图片自动保存到项目的 `/pic` 目录
+- 🔄 **格式转换**: 自动将 WebP 格式转换为 PNG
+- 🎨 **双模式支持**: 支持文生图和图生图两种模式
+- ⚙️ **可配置参数**: 支持自定义比例、分辨率、模型等参数
+
+### 安装方法
+
+1. **确保 jimeng-api 服务正在运行**:
+```bash
+# 使用 Docker 启动服务
+docker-compose up -d
+# 或
+docker run -d --name jimeng-api -p 5100:5100 ghcr.io/iptag/jimeng-api:latest
+```
+
+2. **将 skill 复制到 Claude Code 的 skills 目录**:
+```bash
+# 复制到用户级别的全局 skills 目录
+cp -r jimeng-api ~/.claude/skills/
+
+# 或者复制到项目级别的 skills 目录
+cp -r jimeng-api ./.claude/skills/
+```
+
+3. **安装 Python 依赖**:
+```bash
+pip install requests Pillow
+```
+
+### 使用示例
+
+在 Claude Code 中,您可以直接对话使用:
+
+```
+用户: "用即梦生成一张2K分辨率的16:9图片,内容是未来都市的日落景色"
+
+Claude: [自动调用 skill,生成图片并保存到 /pic 目录]
+```
+
+更多详细用法请参见 `jimeng-api/Skill.md`。
+
 ## 📖 API文档
 
 ### 文生图
@@ -170,8 +218,9 @@ log_level: info # 日志级别: error, warning, info(默认), debug
 **请求参数**:
 - `model` (string): 使用的模型名称
 - `prompt` (string): 图像描述文本
-- `ratio` (string, 可选): 图像比例，默认为 `"1:1"`。支持的比例: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`。
+- `ratio` (string, 可选): 图像比例，默认为 `"1:1"`。支持的比例: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`。**注意**: 当 `intelligent_ratio` 为 `true` 时，此参数将被忽略，系统会根据提示词自动推断最佳比例。
 - `resolution` (string, 可选): 分辨率级别，默认为 `"2k"`。支持的分辨率: `1k`, `2k`, `4k`。
+- `intelligent_ratio` (boolean, 可选): 是否启用智能比例，默认为 `false`。启用后系统会根据提示词自动推断最佳图像比例（例如："竖屏" → 9:16，"横屏" → 16:9）。
 - `negative_prompt` (string, 可选): 负面提示词
 - `sample_strength` (number, 可选): 采样强度 (0.0-1.0)
 - `response_format` (string, 可选): 响应格式 ("url" 或 "b64_json")
@@ -195,6 +244,17 @@ curl -X POST http://localhost:9000/v1/images/generations \
     "prompt": "壮丽的山水风景，超高分辨率",
     "ratio": "16:9",
     "resolution": "4k"
+  }'
+
+# 使用智能比例的示例（系统会根据"竖屏"自动推断为9:16）
+curl -X POST http://localhost:5100/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_SESSION_ID" \
+  -d '{
+    "model": "jimeng-4.0",
+    "prompt": "奔跑的狮子，竖屏",
+    "resolution": "2k",
+    "intelligent_ratio": true
   }'
 ```
 
@@ -259,6 +319,7 @@ curl -X POST http://localhost:9000/v1/images/compositions \
 - `images` (array): 输入图片数组
 - `ratio` (string, 可选): 图像比例，默认为 `"1:1"`。支持的比例: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`。
 - `resolution` (string, 可选): 分辨率级别，默认为 `"2k"`。支持的分辨率: `1k`, `2k`, `4k`。
+- `intelligent_ratio` (boolean, 可选): 是否启用智能比例，默认为 `false`。启用后系统会根据提示词和输入图片自动调整输出比例。
 - `negative_prompt` (string, 可选): 负面提示词
 - `sample_strength` (number, 可选): 采样强度 (0.0-1.0)
 - `response_format` (string, 可选): 响应格式 ("url"(默认) 或 "b64_json")
