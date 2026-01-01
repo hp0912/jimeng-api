@@ -54,19 +54,37 @@ export const IMAGE_MODEL_MAP = {
 
 export const IMAGE_MODEL_MAP_US = {
   "jimeng-4.5": "high_aes_general_v40l",
+  "jimeng-4.1": "high_aes_general_v41",
   "jimeng-4.0": "high_aes_general_v40",
   "jimeng-3.0": "high_aes_general_v30l:general_v3.0_18b",
   "nanobanana": "external_model_gemini_flash_image_v25",
   "nanobananapro": "dreamina_image_lib_1",
 };
 
-// 视频模型映射
+// 视频模型映射 - 国内站 (CN)
 export const VIDEO_MODEL_MAP = {
   "jimeng-video-3.5-pro": "dreamina_ic_generate_video_model_vgfm_3.5_pro",
-  "jimeng-video-3.5": "dreamina_ic_generate_video_model_vgfm_3.5",
   "jimeng-video-3.0-pro": "dreamina_ic_generate_video_model_vgfm_3.0_pro",
   "jimeng-video-3.0": "dreamina_ic_generate_video_model_vgfm_3.0",
   "jimeng-video-3.0-fast": "dreamina_ic_generate_video_model_vgfm_3.0_fast",
+  "jimeng-video-2.0": "dreamina_ic_generate_video_model_vgfm_lite",
+  "jimeng-video-2.0-pro": "dreamina_ic_generate_video_model_vgfm1.0"
+};
+
+// 视频模型映射 - 美国站 (US) - 仅保留 3.0 和 3.5-pro
+export const VIDEO_MODEL_MAP_US = {
+  "jimeng-video-3.5-pro": "dreamina_ic_generate_video_model_vgfm_3.5_pro",
+  "jimeng-video-3.0": "dreamina_ic_generate_video_model_vgfm_3.0",
+};
+
+// 视频模型映射 - 亚洲国际站 (HK/JP/SG)
+export const VIDEO_MODEL_MAP_ASIA = {
+  "jimeng-video-veo3": "dreamina_veo3_generate_video",
+  "jimeng-video-veo3.1": "dreamina_veo3.1_generate_video",
+  "jimeng-video-sora2": "dreamina_sora2_generate_video",
+  "jimeng-video-3.5-pro": "dreamina_ic_generate_video_model_vgfm_3.5_pro",
+  "jimeng-video-3.0-pro": "dreamina_ic_generate_video_model_vgfm_3.0_pro",
+  "jimeng-video-3.0": "dreamina_ic_generate_video_model_vgfm_3.0",
   "jimeng-video-2.0": "dreamina_ic_generate_video_model_vgfm_lite",
   "jimeng-video-2.0-pro": "dreamina_ic_generate_video_model_vgfm1.0"
 };
@@ -89,10 +107,10 @@ export const RETRY_CONFIG = {
 
 // 轮询配置
 export const POLLING_CONFIG = {
-  MAX_POLL_COUNT: 900, // 15分钟
-  POLL_INTERVAL: 5000, // 1秒
-  STABLE_ROUNDS: 5,    // 稳定轮次
-  TIMEOUT_SECONDS: 900 // 15分钟超时
+  MAX_POLL_COUNT: 900,   // 最大轮询次数
+  POLL_INTERVAL: 5000,   // 轮询间隔 5 秒
+  STABLE_ROUNDS: 5,      // 稳定轮次
+  TIMEOUT_SECONDS: 900   // 默认超时 15 分钟
 };
 
 // 支持的图片比例和分辨率
