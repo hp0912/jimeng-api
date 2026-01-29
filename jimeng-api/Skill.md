@@ -11,11 +11,12 @@ dependencies: python>=3.7, requests>=2.28.0, Pillow>=9.0.0
 
 This skill enables image generation using a locally deployed Jimeng API service (Docker). It converts text prompts into high-quality images and automatically downloads them to the project's `/pic` folder. The skill supports text-to-image generation, image-to-image composition, customizable aspect ratios (1:1, 16:9, etc.), and multiple resolution levels (1k, 2k, 4k).
 
-**API Endpoint**: `http://localhost:5100`
+**API Endpoint**: `http://localhost:9000`
 
 ## When to Use This Skill
 
 Use this skill when users request:
+
 - "使用即梦生成图片 [描述]"
 - "Generate an image using Jimeng: [description]"
 - "Create artwork showing [scene/concept]"
@@ -31,20 +32,23 @@ Use this skill when users request:
 **IMPORTANT**: The Jimeng API must be running locally via Docker before using this skill.
 
 **Region-specific prefixes**:
-   - 国内站: Direct sessionid (e.g., `your_session_id`)
-   - 美国站: Add `us-` prefix (e.g., `us-your_session_id`)
-   - 香港站: Add `hk-` prefix (e.g., `hk-your_session_id`)
-   - 日本站: Add `jp-` prefix (e.g., `jp-your_session_id`)
-   - 新加坡站: Add `sg-` prefix (e.g., `sg-your_session_id`)
+
+- 国内站: Direct sessionid (e.g., `your_session_id`)
+- 美国站: Add `us-` prefix (e.g., `us-your_session_id`)
+- 香港站: Add `hk-` prefix (e.g., `hk-your_session_id`)
+- 日本站: Add `jp-` prefix (e.g., `jp-your_session_id`)
+- 新加坡站: Add `sg-` prefix (e.g., `sg-your_session_id`)
 
 **⚠️ nanobanana Model Resolution Rules**:
-   - **US site (us-)**: Fixed at 1024×1024 with 2k resolution; ignores user-provided `ratio` and `resolution` parameters
-   - **HK/JP/SG sites (hk-/jp-/sg-)**: Forced 1k resolution, but supports custom `ratio` parameters (e.g., 16:9, 4:3)
-   - **Domestic site (CN)**: Does not support nanobanana model; use jimeng series instead
+
+- **US site (us-)**: Fixed at 1024×1024 with 2k resolution; ignores user-provided `ratio` and `resolution` parameters
+- **HK/JP/SG sites (hk-/jp-/sg-)**: Forced 1k resolution, but supports custom `ratio` parameters (e.g., 16:9, 4:3)
+- **Domestic site (CN)**: Does not support nanobanana model; use jimeng series instead
 
 **Always ask the user for their Session ID before proceeding**, as the skill does not include a pre-configured credential.
 
 Example prompt to user:
+
 > "要使用即梦API生成图片,我需要您的Session ID。您可以从即梦网站(jimeng.jianying.com)的浏览器Cookie中获取 sessionid。
 >
 > 如果使用国际站,请在sessionid前添加对应前缀(us-/hk-/jp-/sg-)。
@@ -85,6 +89,7 @@ Rationale: Tools may “helpfully” add options (e.g., `--ratio 16:9`) that the
 Generate images from text descriptions.
 
 **Minimal default usage (no optional params):**
+
 ```bash
 python scripts/generate_image.py text \
     "a cute cat" \
@@ -94,6 +99,7 @@ python scripts/generate_image.py text \
 Only include optional parameters when the user explicitly requests them.
 
 **With user-specified parameters (only when requested):**
+
 ```bash
 python scripts/generate_image.py text \
     "futuristic city at sunset with flying cars" \
@@ -104,6 +110,7 @@ python scripts/generate_image.py text \
 ```
 
 **Parameters:**
+
 - `prompt` (required): Text description of the desired image
 - `--session-id`: Jimeng session ID (required)
 - `--model`: Model to use (default: `jimeng-4.0`)
@@ -115,7 +122,7 @@ python scripts/generate_image.py text \
 - `--intelligent-ratio`: Enable smart ratio detection based on prompt keywords **⚠️ Only works for jimeng-4.0/jimeng-4.1/jimeng-4.5 models; other models will ignore this parameter**
 - `--negative-prompt`: Negative prompt (elements to avoid)
 - `--sample-strength`: Sampling strength (0.0-1.0)
-- `--api-url`: Custom API URL (default: `http://localhost:5100`)
+- `--api-url`: Custom API URL (default: `http://localhost:9000`)
 - `--output-dir`: Custom output directory (defaults to `project_root/pic`)
 
 ### Image-to-Image Composition
@@ -123,9 +130,11 @@ python scripts/generate_image.py text \
 Transform or compose images based on text guidance.
 
 **Example user request:**
+
 > "把这张照片转换成油画风格,色彩鲜艳,笔触明显"
 
 **Script usage:**
+
 ```bash
 # Using local file
 python scripts/generate_image.py image \
@@ -147,6 +156,7 @@ python scripts/generate_image.py image \
 ```
 
 **Parameters:**
+
 - Same as text-to-image, plus:
 - `--images`: One or more image paths or URLs (1-10 images)
 
@@ -160,6 +170,7 @@ python scripts/generate_image.py image \
 Use `--intelligent-ratio` to automatically select the best aspect ratio based on prompt keywords.
 
 **Example:**
+
 ```bash
 python scripts/generate_image.py text \
     "奔跑的狮子,竖屏" \
@@ -170,29 +181,31 @@ python scripts/generate_image.py text \
 
 ### Resolution Options
 
-| Resolution | Ratio | Dimensions |
-|------------|-------|------------|
-| **1k** | 1:1 | 1024×1024 |
-|  | 4:3 | 768×1024 |
-|  | 3:4 | 1024×768 |
-|  | 16:9 | 1024×576 |
-|  | 9:16 | 576×1024 |
-|  | 3:2 | 1024×682 |
-|  | 2:3 | 682×1024 |
-|  | 21:9 | 1195×512 |
-| **2k** (default) | 1:1 | 2048×2048 |
-|  | 16:9 | 2560×1440 |
-|  | 4:3 | 2304×1728 |
-| **4k** | 1:1 | 4096×4096 |
-|  | 16:9 | 5120×2880 |
-|  | 21:9 | 6048×2592 |
+| Resolution       | Ratio | Dimensions |
+| ---------------- | ----- | ---------- |
+| **1k**           | 1:1   | 1024×1024  |
+|                  | 4:3   | 768×1024   |
+|                  | 3:4   | 1024×768   |
+|                  | 16:9  | 1024×576   |
+|                  | 9:16  | 576×1024   |
+|                  | 3:2   | 1024×682   |
+|                  | 2:3   | 682×1024   |
+|                  | 21:9  | 1195×512   |
+| **2k** (default) | 1:1   | 2048×2048  |
+|                  | 16:9  | 2560×1440  |
+|                  | 4:3   | 2304×1728  |
+| **4k**           | 1:1   | 4096×4096  |
+|                  | 16:9  | 5120×2880  |
+|                  | 21:9  | 6048×2592  |
 
 ## Script Details
 
 ### Location
+
 `scripts/generate_image.py`
 
 ### Key Features
+
 - Automatic project root detection (looks for `.git`, `.claude`, etc.)
 - Creates `/pic` folder if it doesn't exist
 - Timestamps filenames to prevent overwrites (format: `jimeng_YYYYMMDD_HHMMSS_N.png`)
@@ -204,12 +217,15 @@ python scripts/generate_image.py text \
 - Prints generation statistics
 
 ### Output Format
+
 - Images are saved to: `{project_root}/pic/jimeng_{timestamp}_{index}.png`
 - **All images are automatically converted to PNG format** (including WebP sources)
 - Each API call generates several variations
 
 ### Requirements
+
 The script requires:
+
 ```bash
 pip install requests Pillow
 ```
@@ -221,7 +237,7 @@ pip install requests Pillow
 ```
 User requests image generation
     ↓
-Is Jimeng API running at localhost:5100?
+Is Jimeng API running at localhost:9000?
     ├─ No → Instruct user to start Docker service
     └─ Yes → Continue
     ↓
@@ -253,29 +269,35 @@ Script executes:
 ### Common Issues
 
 **"Session ID required"**
+
 - Ensure the user has provided their sessionid from 即梦/Dreamina
 - Verify correct region prefix (us-/hk-/jp-/sg- for international sites)
 
 **"Invalid session or authentication failed"**
+
 - Session ID may have expired
 - Request user to refresh their browser and get a new sessionid
 - Verify the sessionid is copied correctly (no extra spaces)
 
 **"Error downloading image"**
+
 - Check network connectivity
 - Verify output directory is writable
 - Image URLs may have expired (retry generation)
 
 **"Model not supported"**
+
 - `nanobanana` only works with international sites (us-/hk-/jp-/sg- prefix)
 - `jimeng-3.1` and `jimeng-2.1` only work with domestic sites
 
 **"nanobanana resolution mismatch"**
+
 - **US site (us- prefix)**: nanobanana model only supports 1024×1024 @ 2k resolution; all `ratio` and `resolution` parameters are ignored
 - **HK/JP/SG sites (hk-/jp-/sg- prefix)**: nanobanana model forces 1k resolution, but allows custom ratios (e.g., 16:9, 4:3)
 - If you need full control over resolution and ratio, use `jimeng-4.0` model instead
 
 **"intelligent_ratio not working"**
+
 - The `--intelligent-ratio` flag only works with `jimeng-4.0`, `jimeng-4.1`, and `jimeng-4.5` models
 - Other models (jimeng-3.0, nanobanana, etc.) will ignore this parameter
 - Solution: Use `jimeng-4.0`, `jimeng-4.1`, or `jimeng-4.5` if you need intelligent ratio detection
@@ -293,6 +315,7 @@ Script executes:
 ## Example Interactions
 
 **Example 1: Simple text-to-image**
+
 ```
 User: "用即梦生成一张日落山景图"
 Claude: "我来帮您使用即梦API生成图片。首先需要确认您的Session ID..."
@@ -306,6 +329,7 @@ Claude: "✅ 成功生成4张图片!
 ```
 
 **Example 2: High-resolution with custom ratio**
+
 ```
 User: "生成4K分辨率的21:9超宽屏壮丽山水风景"
 Claude: [Executes with --resolution "4k" --ratio "21:9"]
@@ -314,6 +338,7 @@ Claude: "✅ 已生成4K超宽屏图片(6048×2592):
 ```
 
 **Example 3: Image-to-image transformation**
+
 ```
 User: "把这张猫咪照片转成动漫风格"
 Claude: "请提供猫咪照片的路径或URL"
@@ -325,6 +350,7 @@ Claude: "✅ 图片风格转换完成,生成了4个动漫风格版本:
 ```
 
 **Example 4: Intelligent ratio**
+
 ```
 User: "生成一张竖屏手机壁纸,星空主题"
 Claude: [Executes with --intelligent-ratio, auto-detects 9:16]
@@ -337,13 +363,13 @@ The Jimeng API returns image variations per request:
 
 ```json
 {
-    "created": 1763260188,
-    "data": [
-        {"url": "https://p3-dreamina-sign.byteimg.com/...image1.png"},
-        {"url": "https://p26-dreamina-sign.byteimg.com/...image2.png"},
-        {"url": "https://p26-dreamina-sign.byteimg.com/...image3.png"},
-        {"url": "https://p3-dreamina-sign.byteimg.com/...image4.png"}
-    ]
+  "created": 1763260188,
+  "data": [
+    { "url": "https://p3-dreamina-sign.byteimg.com/...image1.png" },
+    { "url": "https://p26-dreamina-sign.byteimg.com/...image2.png" },
+    { "url": "https://p26-dreamina-sign.byteimg.com/...image3.png" },
+    { "url": "https://p3-dreamina-sign.byteimg.com/...image4.png" }
+  ]
 }
 ```
 

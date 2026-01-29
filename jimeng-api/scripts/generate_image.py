@@ -30,7 +30,7 @@ def generate_text_to_image(
     intelligent_ratio: bool = False,
     negative_prompt: str = None,
     sample_strength: float = None,
-    api_url: str = "http://localhost:5100",
+    api_url: str = "http://localhost:9000",
     output_dir: str = None
 ):
     """
@@ -101,7 +101,7 @@ def generate_image_to_image(
     intelligent_ratio: bool = False,
     negative_prompt: str = None,
     sample_strength: float = None,
-    api_url: str = "http://localhost:5100",
+    api_url: str = "http://localhost:9000",
     output_dir: str = None
 ):
     """
@@ -387,8 +387,8 @@ def main():
         subparser.add_argument(
             "--api-url",
             type=str,
-            default="http://localhost:5100",
-            help="Jimeng API base URL (default: http://localhost:5100)"
+            default="http://localhost:9000",
+            help="Jimeng API base URL (default: http://localhost:9000)"
         )
         subparser.add_argument(
             "--output-dir",

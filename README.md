@@ -193,7 +193,7 @@ This project includes a dedicated Claude Code Skill for quick image generation u
 # Start the service with Docker
 docker-compose up -d
 # or
-docker run -d --name jimeng-api -p 5100:5100 ghcr.io/iptag/jimeng-api:latest
+docker run -d --name jimeng-api -p 9000:9000 ghcr.io/iptag/jimeng-api:latest
 ```
 
 2. **Copy the skill to Claude Code's skills directory**:
@@ -257,7 +257,7 @@ curl -X POST http://localhost:9000/v1/images/generations \
     "{\"model\": \"jimeng-4.5\", \"prompt\": \"Magnificent landscape, ultra-high resolution\", \"ratio\": \"16:9\", \"resolution\": \"4k\"}"
 
 # Example using intelligent ratio (system will infer 9:16 from "portrait")
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d \
@@ -532,13 +532,13 @@ The proxy prefix is at the outermost layer, and the region prefix follows the se
 
 ```bash
 # Single token with proxy
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Authorization: Bearer socks5://127.0.0.1:1080@us-session_id" \
   -H "Content-Type: application/json" \
   -d '{"prompt": "a cat", "model": "jimeng-3.0"}'
 
 # Multiple tokens, some with proxy
-curl -X POST http://localhost:5100/token/receive \
+curl -X POST http://localhost:9000/token/receive \
   -H "Authorization: Bearer socks5://1.2.3.4:1080@us-token1,http://5.6.7.8:8080@hk-token2,token3"
 ```
 
@@ -627,11 +627,11 @@ Manually trigger daily credit collection (check-in). Attempts to claim credits a
 
 ```bash
 # Single token
-curl -X POST http://localhost:5100/token/receive \
+curl -X POST http://localhost:9000/token/receive \
   -H "Authorization: Bearer YOUR_SESSION_ID"
 
 # Multiple tokens
-curl -X POST http://localhost:5100/token/receive \
+curl -X POST http://localhost:9000/token/receive \
   -H "Authorization: Bearer TOKEN1,TOKEN2,TOKEN3"
 ```
 

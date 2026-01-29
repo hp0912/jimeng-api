@@ -195,7 +195,7 @@ log_level: info # 日志级别: error, warning, info(默认), debug
 # 使用 Docker 启动服务
 docker-compose up -d
 # 或
-docker run -d --name jimeng-api -p 5100:5100 ghcr.io/iptag/jimeng-api:latest
+docker run -d --name jimeng-api -p 9000:9000 ghcr.io/iptag/jimeng-api:latest
 ```
 
 2. **将 skill 复制到 Claude Code 的 skills 目录**:
@@ -267,7 +267,7 @@ curl -X POST http://localhost:9000/v1/images/generations \
   }'
 
 # 使用智能比例的示例（系统会根据"竖屏"自动推断为9:16）
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_ID" \
   -d '{
@@ -562,13 +562,13 @@ curl -X POST http://localhost:9000/v1/videos/generations \
 
 ```bash
 # 单个 token 带代理
-curl -X POST http://localhost:5100/v1/images/generations \
+curl -X POST http://localhost:9000/v1/images/generations \
   -H "Authorization: Bearer socks5://127.0.0.1:1080@us-session_id" \
   -H "Content-Type: application/json" \
   -d '{"prompt": "a cat", "model": "jimeng-3.0"}'
 
 # 多个 token，部分带代理
-curl -X POST http://localhost:5100/token/receive \
+curl -X POST http://localhost:9000/token/receive \
   -H "Authorization: Bearer socks5://1.2.3.4:1080@us-token1,http://5.6.7.8:8080@hk-token2,token3"
 ```
 
@@ -657,11 +657,11 @@ curl -X POST http://localhost:5100/token/receive \
 
 ```bash
 # 单个token
-curl -X POST http://localhost:5100/token/receive \
+curl -X POST http://localhost:9000/token/receive \
   -H "Authorization: Bearer YOUR_SESSION_ID"
 
 # 多个token批量签到
-curl -X POST http://localhost:5100/token/receive \
+curl -X POST http://localhost:9000/token/receive \
   -H "Authorization: Bearer TOKEN1,TOKEN2,TOKEN3"
 ```
 
