@@ -46,19 +46,24 @@ curl -X POST http://localhost:9000/v1/images/generations \
 ## 🚀 Quick Start
 
 ### Getting `sessionid`
+
 - Getting your `sessionid` works the same way on both the China site (Jimeng) and international sites (Dreamina) — see the screenshot below.
-> **Note 1**: The API endpoints are the same for the China site and international sites, but use different prefixes:
-> - **China site**: Use the `sessionid` directly, e.g., `Bearer your_session_id`
-> - **US site**: Add **us-** prefix, e.g., `Bearer us-your_session_id`
-> - **Hong Kong site**: Add **hk-** prefix, e.g., `Bearer hk-your_session_id`
-> - **Japan site**: Add **jp-** prefix, e.g., `Bearer jp-your_session_id`
-> - **Singapore site**: Add **sg-** prefix, e.g., `Bearer sg-your_session_id`
->
-> **Note 2**: The China site and international sites now support both *text-to-image* and *image-to-image*. The nanobanana and nanobananapro models are available on international sites.
->
-> **Note 3**: Resolution rules when using the nanobanana model on international sites:
-> - **US site (us-)**: Images are fixed at **1024x1024** with **2k** resolution, ignoring user-provided ratio and resolution parameters
-> - **Hong Kong/Japan/Singapore sites (hk-/jp-/sg-)**: Fixed **1k** resolution, but supports custom `ratio` values (e.g., 16:9, 4:3, etc.)
+  > **Note 1**: The API endpoints are the same for the China site and international sites, but use different prefixes:
+  >
+  > - **China site**: Use the `sessionid` directly, e.g., `Bearer your_session_id`
+  > - **US site**: Add **us-** prefix, e.g., `Bearer us-your_session_id`
+  > - **Hong Kong site**: Add **hk-** prefix, e.g., `Bearer hk-your_session_id`
+  > - **Japan site**: Add **jp-** prefix, e.g., `Bearer jp-your_session_id`
+  > - **Singapore site**: Add **sg-** prefix, e.g., `Bearer sg-your_session_id`
+  >
+  > **Note 2**: Supports binding proxies (HTTP/SOCKS5, etc.) in the Token, see [Token Bound Proxy Feature](#token-bound-proxy-feature-new) for details.
+  >
+  > **Note 3**: The China site and international sites now support both _text-to-image_ and _image-to-image_. The nanobanana and nanobananapro models are available on international sites.
+  >
+  > **Note 4**: Resolution rules when using the nanobanana model on international sites:
+  >
+  > - **US site (us-)**: Images are fixed at **1024x1024** with **2k** resolution, ignoring user-provided ratio and resolution parameters
+  > - **Hong Kong/Japan/Singapore sites (hk-/jp-/sg-)**: Fixed **1k** resolution, but supports custom `ratio` values (e.g., 16:9, 4:3, etc.)
 
 ![](https://github.com/iptag/jimeng-api/blob/main/get_sessionid.png)
 
@@ -73,6 +78,7 @@ curl -X POST http://localhost:9000/v1/images/generations \
 #### Method 1: Pull and Update the Docker Image (Recommended)
 
 **Pull command**
+
 ```bash
 docker run -d \
   --name jimeng-api \
@@ -82,6 +88,7 @@ docker run -d \
 ```
 
 **Update command**
+
 ```bash
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
@@ -109,6 +116,7 @@ npm run dev
 #### Method 3: Docker Deployment (recommended)
 
 ##### 🚀 Quick Start
+
 ```bash
 # Using docker-compose
 docker-compose up -d
@@ -124,6 +132,7 @@ docker run -d \
 ```
 
 ##### 🔧 Common Commands
+
 ```bash
 # Rebuild and start
 docker-compose up -d --build
@@ -139,6 +148,7 @@ docker exec -it jimeng-api sh
 ```
 
 ##### 📊 Docker Image Features
+
 - ✅ **Multi-stage build**: Optimized image size (170MB)
 - ✅ **Non-root user**: Enhanced security (user:jimeng,)
 - ✅ **Health check**: Automatic service status monitoring
@@ -148,6 +158,7 @@ docker exec -it jimeng-api sh
 ### Configuration
 
 #### `configs/dev/service.yml`
+
 ```yaml
 name: jimeng-api
 route: src/api/routes/index.ts
@@ -155,6 +166,7 @@ port: 9000
 ```
 
 #### `configs/dev/system.yml`
+
 ```yaml
 requestLog: true
 debug: false
@@ -176,6 +188,7 @@ This project includes a dedicated Claude Code Skill for quick image generation u
 ### Installation
 
 1. **Ensure the jimeng-api service is running**:
+
 ```bash
 # Start the service with Docker
 docker-compose up -d
@@ -184,6 +197,7 @@ docker run -d --name jimeng-api -p 5100:5100 ghcr.io/iptag/jimeng-api:latest
 ```
 
 2. **Copy the skill to Claude Code's skills directory**:
+
 ```bash
 # Copy to user-level global skills directory
 cp -r jimeng-api ~/.claude/skills/
@@ -193,6 +207,7 @@ cp -r jimeng-api ./.claude/skills/
 ```
 
 3. **Install Python dependencies**:
+
 ```bash
 pip install requests Pillow
 ```
@@ -216,6 +231,7 @@ For more details, see `jimeng-api/Skill.md`.
 **POST** `/v1/images/generations`
 
 **Request Parameters**:
+
 - `model` (string, optional): The name of the model to use. Defaults to `jimeng-4.5` on all sites (China/US/HK/JP/SG).
 - `prompt` (string): The text description of the image.
 - `ratio` (string, optional): The aspect ratio of the image, defaults to `"1:1"`. Supported ratios: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`. **Note**: When `intelligent_ratio` is `true`, this parameter will be ignored and the system will automatically infer the optimal ratio from the prompt.
@@ -249,6 +265,7 @@ curl -X POST http://localhost:5100/v1/images/generations \
 ```
 
 **Supported Models**:
+
 - `nanobananapro`: International sites only, supports `ratio` and `resolution`.
 - `nanobanana`: International sites only.
 - `jimeng-4.5`: Works on all sites, supports all 2k/4k ratios and intelligent_ratio. **(Default for all sites)**
@@ -306,6 +323,7 @@ curl -X POST http://localhost:9000/v1/images/compositions \
 ```
 
 **Request Parameters**:
+
 - `model` (string, optional): The name of the model to use. Defaults to `jimeng-4.5` on all sites (China/US/HK/JP/SG).
 - `prompt` (string): Text description of the image to guide the generation.
 - `images` (array): An array of input images.
@@ -317,6 +335,7 @@ curl -X POST http://localhost:9000/v1/images/compositions \
 - `response_format` (string, optional): Response format ("url"(default) or "b64_json").
 
 **Limits**:
+
 - Number of input images: 1-10
 - Supported image formats: Common formats (JPG, PNG, WebP, etc.).
 - Image size limit: Recommended not to exceed 100MB per image.
@@ -351,6 +370,7 @@ curl -X POST http://localhost:9000/v1/images/compositions \
 ```
 
 **Successful Response Example** (applies to all examples above):
+
 ```json
 {
   "created": 1703123456,
@@ -374,6 +394,7 @@ A: Complex multi-image compositions can take longer. If it still isn't done afte
 
 **Q: How to improve composition quality?**
 A:
+
 - Start with high-quality input images.
 - Write clear, detailed prompts.
 - Tune the `sample_strength` parameter.
@@ -396,11 +417,13 @@ Generate a video from a text prompt (Text-to-Video) or from start/end frame imag
 3. **First-Last Frame**: Two images as the first and last frames
 
 > **Mode Detection**: The system automatically determines the generation mode based on the presence of images:
+>
 > - **No images** → Text-to-Video mode
 > - **1 image** → Image-to-Video mode (only first_frame_image is provided)
 > - **2 images** → First-Last Frame mode (both first_frame_image and end_frame_image are provided)
 
 **Request Parameters**:
+
 - `model` (string): The name of the video model to use.
 - `prompt` (string): The text description of the video content.
 - `ratio` (string, optional): Video aspect ratio, defaults to `"1:1"`. Supported ratios: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `21:9`. **Note**: In image-to-video mode (when images are provided), this parameter will be ignored, and the video aspect ratio will be determined by the input image's actual ratio.
@@ -415,12 +438,14 @@ Generate a video from a text prompt (Text-to-Video) or from start/end frame imag
 - `response_format` (string, optional): Response format, supports `url` (default) or `b64_json`.
 
 > **Image Input Description**:
+>
 > - You can provide input images via `file_paths` (URL array) or by directly uploading files.
 > - If both methods are provided, the system will **prioritize the locally uploaded files**.
 > - Up to 2 images are supported, the 1st as the start frame, the 2nd as the end frame.
 > - **Important**: Once image input is provided (image-to-video or first-last frame video), the `ratio` parameter will be ignored, and the video aspect ratio will be determined by the input image's actual ratio. The `resolution` parameter remains effective.
 
 **Supported Video Models**:
+
 - `jimeng-video-3.5-pro` - Professional Edition v3.5, works on all sites **(Default)**
 - `jimeng-video-veo3` - Veo3 model, Asia international sites only (HK/JP/SG), fixed 8s duration
 - `jimeng-video-veo3.1` - Veo3.1 model, Asia international sites only (HK/JP/SG), fixed 8s duration
@@ -471,19 +496,53 @@ curl -X POST http://localhost:9000/v1/videos/generations \
 
 ```
 
-### Chat Completions
+### Token API
 
-**POST** `/v1/chat/completions`
+#### Token Bound Proxy Feature (New)
 
-```bash
-curl -X POST http://localhost:9000/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_SESSION_ID" \
-  -d \
-    "{\"model\": \"jimeng-4.5\", \"messages\": [ { \"role\": \"user\", \"content\": \"Draw a landscape painting\" } ]}"
+**Description**: Users can embed a proxy URL in the token to solve issues where IP restrictions lead to 0 credit points during check-in. Each account can be bound to an independent proxy.
+
+**Token Format**:
+
+```
+[ProxyURL@][RegionPrefix-]session_id
+
+The proxy prefix is at the outermost layer, and the region prefix follows the session_id.
 ```
 
-### Token API
+**Supported Proxy Protocols**:
+
+- HTTP Proxy: `http://host:port`
+- HTTPS Proxy: `https://host:port`
+- SOCKS4 Proxy: `socks4://host:port`
+- SOCKS5 Proxy: `socks5://host:port`
+- Authenticated Proxy: `http://user:pass@host:port`
+
+**Full Examples**:
+| Scenario | Token Format |
+|------|-----------|
+| China site, no proxy | `session_id_xxx` |
+| US site, no proxy | `us-session_id_xxx` |
+| HK site, no proxy | `hk-session_id_xxx` |
+| China site + SOCKS5 Proxy | `socks5://127.0.0.1:1080@session_id_xxx` |
+| US site + HTTP Proxy | `http://127.0.0.1:7890@us-session_id_xxx` |
+| HK site + Auth Proxy | `http://user:pass@proxy.com:8080@hk-session_id_xxx` |
+
+**API Call Examples**:
+
+```bash
+# Single token with proxy
+curl -X POST http://localhost:5100/v1/images/generations \
+  -H "Authorization: Bearer socks5://127.0.0.1:1080@us-session_id" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "a cat", "model": "jimeng-3.0"}'
+
+# Multiple tokens, some with proxy
+curl -X POST http://localhost:5100/token/receive \
+  -H "Authorization: Bearer socks5://1.2.3.4:1080@us-token1,http://5.6.7.8:8080@hk-token2,token3"
+```
+
+**Backward Compatibility**: The token format without a proxy is fully compatible and requires no changes.
 
 #### Check Token Status
 
@@ -492,7 +551,16 @@ curl -X POST http://localhost:9000/v1/chat/completions \
 Check if a token is valid and active.
 
 **Request Parameters**:
+
 - `token` (string): The session token to check
+
+**Response Format**:
+
+```json
+{
+  "live": true
+}
+```
 
 #### Get Credit Points
 
@@ -501,23 +569,16 @@ Check if a token is valid and active.
 Get the current credit balance for one or more tokens.
 
 **Request Headers**:
-- `Authorization`: Bearer token(s), multiple tokens separated by commas
 
-#### Receive Daily Credits
-
-**POST** `/token/receive`
-
-Manually trigger daily credit collection (check-in). Attempts to claim credits and returns the latest credit information regardless of claim success.
-
-**Request Headers**:
 - `Authorization`: Bearer token(s), multiple tokens separated by commas
 
 **Response Format**:
+
 ```json
 [
   {
     "token": "your_token",
-    "credits": {
+    "points": {
       "giftCredit": 10,
       "purchaseCredit": 0,
       "vipCredit": 0,
@@ -527,7 +588,43 @@ Manually trigger daily credit collection (check-in). Attempts to claim credits a
 ]
 ```
 
+#### Receive Daily Credits
+
+**POST** `/token/receive`
+
+Manually trigger daily credit collection (check-in). Attempts to claim credits and returns the latest credit information regardless of claim success.
+
+**Request Headers**:
+
+- `Authorization`: Bearer token(s), multiple tokens separated by commas
+
+**Response Format**:
+
+```json
+[
+  {
+    "token": "your_token",
+    "credits": {
+      "giftCredit": 10,
+      "purchaseCredit": 0,
+      "vipCredit": 0,
+      "totalCredit": 10
+    },
+    "received": true,
+    "error": "optional error message"
+  }
+]
+```
+
+**Response Fields**:
+
+- `token` (string): The token that was processed
+- `credits` (object): Current credit balance after operation
+- `received` (boolean): Whether credits were successfully claimed (`true` if claimed, `false` if already had credits or claim failed)
+- `error` (string, optional): Error message if claim failed
+
 **Usage Example**:
+
 ```bash
 # Single token
 curl -X POST http://localhost:5100/token/receive \
@@ -541,6 +638,7 @@ curl -X POST http://localhost:5100/token/receive \
 ## 🔍 API Response Format
 
 ### Image Generation Response
+
 ```json
 {
   "created": 1759058768,
@@ -555,86 +653,79 @@ curl -X POST http://localhost:5100/token/receive \
 }
 ```
 
-### Chat Completion Response
-```json
-{
-  "id": "chatcmpl-123",
-  "object": "chat.completion",
-  "created": 1759058768,
-  "model": "jimeng-4.5",
-  "choices": [
-    {
-      "index": 0,
-      "message": {
-        "role": "assistant",
-        "content": "![image](https://example.com/generated-image.jpg)"
-      },
-      "finish_reason": "stop"
-    }
-  ],
-  "usage": {
-    "prompt_tokens": 10,
-    "completion_tokens": 20,
-    "total_tokens": 30
-  }
-}
-```
-
-### Stream Response (SSE)
-```
-data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1759058768,"model":"jimeng-4.5","choices":[{"index":0,"delta":{"role":"assistant","content":"🎨 Generating image, please wait..."},"finish_reason":null}]}
-
-data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1759058768,"model":"jimeng-4.5","choices":[{"index":1,"delta":{"role":"assistant","content":"![image](https://example.com/image.jpg)"},"finish_reason":"stop"}]}
-
-data: [DONE]
-```
-
 ## 🏗️ Project Architecture
 
 ```
 jimeng-api/
 ├── src/
 │   ├── api/
+│   │   ├── builders/             # Request builders
+│   │   │   └── payload-builder.ts  # API request payload builder
 │   │   ├── controllers/          # Controller layer
-│   │   │   ├── core.ts          # Core functions (network requests, file handling)
-│   │   │   ├── images.ts        # Image generation logic
-│   │   │   ├── videos.ts        # Video generation logic
-│   │   │   └── chat.ts          # Chat interface logic
-│   │   ├── routes/              # Route definitions
-│   │   └── consts/              # Constant definitions
-│   ├── lib/                     # Core library
-│   │   ├── configs/            # Configuration loading
-│   │   ├── consts/             # Constants
-│   │   ├── exceptions/         # Exception classes
-│   │   ├── interfaces/         # Interface definitions
-│   │   ├── request/            # Request handling
-│   │   ├── response/           # Response handling
-│   │   ├── config.ts           # Configuration center
-│   │   ├── server.ts           # Server core
-│   │   ├── logger.ts           # Logger
-│   │   ├── error-handler.ts    # Unified error handling
-│   │   ├── smart-poller.ts     # Smart poller
-│   │   └── aws-signature.ts    # AWS signature
-│   ├── daemon.ts               # Daemon process
-│   └── index.ts               # Entry file
-├── configs/                    # Configuration files
-├── Dockerfile                 # Docker configuration
-└── package.json              # Project configuration
+│   │   │   ├── core.ts           # Core functions (network requests, file handling)
+│   │   │   ├── images.ts         # Image generation logic
+│   │   │   └── videos.ts         # Video generation logic
+│   │   ├── routes/               # Route definitions
+│   │   │   ├── index.ts          # Route entry
+│   │   │   ├── images.ts         # Image generation routes
+│   │   │   ├── videos.ts         # Video generation routes
+│   │   │   ├── token.ts          # Token management routes
+│   │   │   ├── models.ts         # Model list routes
+│   │   │   └── ping.ts           # Health check routes
+│   │   └── consts/               # Constant definitions
+│   │       ├── common.ts         # Common constants
+│   │       ├── dreamina.ts       # Dreamina site constants
+│   │       └── exceptions.ts     # Exception constants
+│   ├── lib/                      # Core library
+│   │   ├── configs/              # Configuration loading
+│   │   │   ├── service-config.ts # Service configuration
+│   │   │   └── system-config.ts  # System configuration
+│   │   ├── consts/               # Constants
+│   │   ├── exceptions/           # Exception classes
+│   │   │   ├── Exception.ts      # Base exception
+│   │   │   └── APIException.ts   # API exception
+│   │   ├── request/              # Request handling
+│   │   │   └── Request.ts        # Request wrapper
+│   │   ├── response/             # Response handling
+│   │   │   ├── Response.ts       # Response wrapper
+│   │   │   ├── Body.ts           # Response body base
+│   │   │   ├── SuccessfulBody.ts # Success response body
+│   │   │   └── FailureBody.ts    # Failure response body
+│   │   ├── config.ts             # Configuration center
+│   │   ├── server.ts             # Server core
+│   │   ├── logger.ts             # Logger
+│   │   ├── error-handler.ts      # Unified error handling
+│   │   ├── smart-poller.ts       # Smart poller
+│   │   ├── aws-signature.ts      # AWS signature
+│   │   ├── environment.ts        # Environment variables
+│   │   ├── initialize.ts         # Initialization logic
+│   │   ├── http-status-codes.ts  # HTTP status code constants
+│   │   ├── image-uploader.ts     # Image upload utility
+│   │   ├── image-utils.ts        # Image processing utility
+│   │   ├── region-utils.ts       # Region handling utility
+│   │   └── util.ts               # Common utility functions
+│   └── index.ts                  # Entry file
+├── configs/                      # Configuration files
+├── Dockerfile                    # Docker configuration
+└── package.json                  # Project configuration
 ```
 
 ## 🔧 Core Components
 
 ### SmartPoller
+
 - Adapts polling interval based on status codes.
 - Multiple exit conditions to avoid invalid waiting.
 - Detailed progress tracking and logging.
 
 ### Unified ErrorHandler
+
 - Categorized error handling (network errors, API errors, timeouts, etc.).
 - Automatic retry mechanism.
 - User-friendly error messages.
 
 ### Safe JSON Parsing
+
 - Automatically fixes common JSON format issues.
 - Supports trailing commas and single quotes.
 - Detailed parsing error logs.
@@ -642,20 +733,22 @@ jimeng-api/
 ## ⚙️ Advanced Configuration
 
 ### Polling Configuration
+
 ```typescript
 export const POLLING_CONFIG = {
-  MAX_POLL_COUNT: 900,    // Max polling attempts (15 minutes)
-  POLL_INTERVAL: 5000,    // Base polling interval (5 second)
-  STABLE_ROUNDS: 5,       // Stable rounds
-  TIMEOUT_SECONDS: 900    // Timeout (15 minutes)
+  MAX_POLL_COUNT: 900, // Max polling attempts (15 minutes)
+  POLL_INTERVAL: 5000, // Base polling interval (5 second)
+  STABLE_ROUNDS: 5, // Stable rounds
+  TIMEOUT_SECONDS: 900, // Timeout (15 minutes)
 };
 ```
 
 ### Retry Configuration
+
 ```typescript
 export const RETRY_CONFIG = {
-  MAX_RETRY_COUNT: 3,     // Max retry attempts
-  RETRY_DELAY: 5000       // Retry delay (5 seconds)
+  MAX_RETRY_COUNT: 3, // Max retry attempts
+  RETRY_DELAY: 5000, // Retry delay (5 seconds)
 };
 ```
 
@@ -664,21 +757,21 @@ export const RETRY_CONFIG = {
 ### Common Issues
 
 1.  **JSON Parsing Error**
-    -   Make sure your request body is valid.
-    -   The system will automatically fix common format issues.
+    - Make sure your request body is valid.
+    - The system will automatically fix common format issues.
 
 2.  **Invalid `sessionid`**
-    -   Get a fresh `sessionid` from the appropriate site.
-    -   Check if the `sessionid` format is correct.
+    - Get a fresh `sessionid` from the appropriate site.
+    - Check if the `sessionid` format is correct.
 
 3.  **Generation Timeout**
-    -   Image generation: up to 15 minutes max (may queue during peak hours).
-    -   Video generation: up to 20 minutes max.
-    -   The system will automatically handle timeouts and return an error message.
+    - Image generation: up to 15 minutes max (may queue during peak hours).
+    - Video generation: up to 20 minutes max.
+    - The system will automatically handle timeouts and return an error message.
 
 4.  **Insufficient Credits**
-    -   Go to the Jimeng/Dreamina official website to check your credit balance.
-    -   The API returns detailed credit info.
+    - Go to the Jimeng/Dreamina official website to check your credit balance.
+    - The API returns detailed credit info.
 
 ## 🙏 Acknowledgements
 
