@@ -302,7 +302,7 @@ export async function request(
     ...(isUS || isHK || isJP || isSG ? {} : { webId: WEB_ID }),
     da_version: DA_VERSION,
     os: "windows",
-    web_component_open_flag: 1,
+    web_component_open_flag: 0,
     web_version: WEB_VERSION,
     aigc_features: "app_lip_sync",
     ...(options.params || {}),
@@ -396,7 +396,8 @@ export async function request(
         error.message.includes('timeout') ||
         error.message.includes('network') ||
         error.message.includes('ECONNRESET') ||
-        error.message.includes('socket hang up');
+        error.message.includes('socket hang up') ||
+        error.message.includes('Proxy connection');
 
       if (isRetryableError && retries < maxRetries) {
         retries++;

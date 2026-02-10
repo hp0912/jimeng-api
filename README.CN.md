@@ -2,7 +2,9 @@
 
 🎨 **免费的AI图像和视频生成API服务** - 基于即梦AI（国内站）和dreamina（国际站）的逆向工程实现。
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/) [![Docker](https://img.shields.io/badge/Docker-支持-blue.svg)](https://www.docker.com/) [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/) [![Docker](https://img.shields.io/badge/Docker-支持-blue.svg)](https://www.docker.com/) [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE) [![Telegram](https://img.shields.io/badge/Telegram-群组-blue.svg?logo=telegram)](https://t.me/jimeng_api)
+
+> 💬 **加入 Telegram 交流群**: [https://t.me/jimeng_api](https://t.me/jimeng_api) — 问题反馈、使用交流、功能讨论。
 
 ## ✨ 特性
 
@@ -238,7 +240,7 @@ Claude: [自动调用 skill,生成图片并保存到 /pic 目录]
 - `prompt` (string): 图像描述文本
 - `ratio` (string, 可选): 图像比例，默认为 `"1:1"`。支持的比例: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`。**注意**: 当 `intelligent_ratio` 为 `true` 时，此参数将被忽略，系统会根据提示词自动推断最佳比例。
 - `resolution` (string, 可选): 分辨率级别，默认为 `"2k"`。支持的分辨率: `1k`, `2k`, `4k`。
-- `intelligent_ratio` (boolean, 可选): 是否启用智能比例，默认为 `false`。**⚠️ 此参数仅对 jimeng-4.0/jimeng-4.1/jimeng-4.5 模型有效，其他模型将忽略此参数。** 启用后系统会根据提示词自动推断最佳图像比例（例如："竖屏" → 9:16，"横屏" → 16:9）。
+- `intelligent_ratio` (boolean, 可选): 是否启用智能比例，默认为 `false`。**⚠️ 此参数仅对 jimeng-4.0/jimeng-4.1/jimeng-4.5/jimeng-4.6/jimeng-5.0 模型有效，其他模型将忽略此参数。** 启用后系统会根据提示词自动推断最佳图像比例（例如："竖屏" → 9:16，"横屏" → 16:9）。
 - `negative_prompt` (string, 可选): 负面提示词
 - `sample_strength` (number, 可选): 采样强度 (0.0-1.0)
 - `response_format` (string, 可选): 响应格式 ("url" 或 "b64_json")
@@ -282,13 +284,13 @@ curl -X POST http://localhost:9000/v1/images/generations \
 
 - `nanobananapro`: 仅国际站支持，支持`ratio` 和`resolution`参数
 - `nanobanana`: 仅国际站支持
+- `jimeng-5.0`: 国内站及亚洲国际站 (HK/JP/SG) 支持
+- `jimeng-4.6`: 国内站及亚洲国际站 (HK/JP/SG) 支持
 - `jimeng-4.5`: 国内、国际站均支持，支持 2k/4k 全部 ratio 及 intelligent_ratio **（所有站点默认模型）**
 - `jimeng-4.1`: 国内、国际站均支持，支持 2k/4k 全部 ratio 及 intelligent_ratio
 - `jimeng-4.0`: 国内、国际站均支持
 - `jimeng-3.1`: 仅国内站支持
 - `jimeng-3.0`: 国内、国际站均支持
-- `jimeng-2.1`: 仅国内站支持
-- `jimeng-xl-pro`
 
 **支持的比例及对应分辨率** ：
 | resolution | ratio | 分辨率 |
@@ -343,7 +345,7 @@ curl -X POST http://localhost:9000/v1/images/compositions \
 - `images` (array): 输入图片数组
 - `ratio` (string, 可选): 图像比例，默认为 `"1:1"`。支持的比例: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`。
 - `resolution` (string, 可选): 分辨率级别，默认为 `"2k"`。支持的分辨率: `1k`, `2k`, `4k`。
-- `intelligent_ratio` (boolean, 可选): 是否启用智能比例，默认为 `false`。**⚠️ 此参数仅对 jimeng-4.0/jimeng-4.1/jimeng-4.5 模型有效，其他模型将忽略此参数。** 启用后系统会根据提示词和输入图片自动调整输出比例。
+- `intelligent_ratio` (boolean, 可选): 是否启用智能比例，默认为 `false`。**⚠️ 此参数仅对 jimeng-4.0/jimeng-4.1/jimeng-4.5/jimeng-4.6/jimeng-5.0 模型有效，其他模型将忽略此参数。** 启用后系统会根据提示词和输入图片自动调整输出比例。
 - `negative_prompt` (string, 可选): 负面提示词
 - `sample_strength` (number, 可选): 采样强度 (0.0-1.0)
 - `response_format` (string, 可选): 响应格式 ("url"(默认) 或 "b64_json")
@@ -451,7 +453,7 @@ A: 可以。现在支持直接上传本地文件。请参考上方的“本地�
 - `duration` (number, 可选): 视频时长（秒）。不同模型支持的值：
   - `jimeng-video-veo3` / `jimeng-video-veo3.1`: `8`（固定）
   - `jimeng-video-sora2`: `4`（默认）、`8`、`12`
-  - `jimeng-video-4.0-pro` / `jimeng-video-4.0`: `5`（默认）、`10`、`15`
+  - `jimeng-video-seedance-2.0`: `4`~`15`（支持任意整数秒，默认`5`）
   - `jimeng-video-3.5-pro`: `5`（默认）、`10`、`12`
   - 其他模型: `5`（默认）、`10`
 - `file_paths` (array, 可选): 一个包含图片URL的数组，用于指定视频的**首帧**（数组第1个元素）和**尾帧**（数组第2个元素）。
@@ -467,8 +469,7 @@ A: 可以。现在支持直接上传本地文件。请参考上方的“本地�
 
 **支持的视频模型**:
 
-- `jimeng-video-4.0-pro` - Seedance 2.0 专业版，仅国内站支持，支持15秒时长 **（最新）**
-- `jimeng-video-4.0` - Seedance 2.0 标准版，仅国内站支持，支持15秒时长 **（最新）**
+- `jimeng-video-seedance-2.0` - Seedance 2.0，仅国内站支持，支持4~15秒时长 **（最新）**
 - `jimeng-video-3.5-pro` - 专业版v3.5，国内/国际站均支持 **（默认）**
 - `jimeng-video-veo3` - Veo3模型，仅亚洲国际站 (HK/JP/SG) 支持，固定8秒时长
 - `jimeng-video-veo3.1` - Veo3.1模型，仅亚洲国际站 (HK/JP/SG) 支持，固定8秒时长

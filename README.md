@@ -4,7 +4,9 @@
 
 🎨 **Free AI Image and Video Generation API Service** - Based on reverse engineering of Jimeng AI (China site) and Dreamina (international site).
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/) [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/) [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/) [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/) [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE) [![Telegram](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/jimeng_api)
+
+> 💬 **Join our Telegram group**: [https://t.me/jimeng_api](https://t.me/jimeng_api) — For questions, feedback, and discussion.
 
 ## ✨ Features
 
@@ -236,7 +238,7 @@ For more details, see `jimeng-api/Skill.md`.
 - `prompt` (string): The text description of the image.
 - `ratio` (string, optional): The aspect ratio of the image, defaults to `"1:1"`. Supported ratios: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`. **Note**: When `intelligent_ratio` is `true`, this parameter will be ignored and the system will automatically infer the optimal ratio from the prompt.
 - `resolution` (string, optional): The resolution level, defaults to `"2k"`. Supported resolutions: `1k`, `2k`, `4k`.
-- `intelligent_ratio` (boolean, optional): Whether to enable intelligent ratio, defaults to `false`. **⚠️ This parameter only works for the jimeng-4.0/jimeng-4.1/jimeng-4.5 model; other models will ignore it.** When enabled, the system automatically infers the optimal image ratio from the prompt (e.g., "portrait" → 9:16, "landscape" → 16:9).
+- `intelligent_ratio` (boolean, optional): Whether to enable intelligent ratio, defaults to `false`. **⚠️ This parameter only works for the jimeng-4.0/jimeng-4.1/jimeng-4.5/jimeng-4.6/jimeng-5.0 model; other models will ignore it.** When enabled, the system automatically infers the optimal image ratio from the prompt (e.g., "portrait" → 9:16, "landscape" → 16:9).
 - `negative_prompt` (string, optional): Negative prompt.
 - `sample_strength` (number, optional): Sampling strength (0.0-1.0).
 - `response_format` (string, optional): Response format ("url"(default) or "b64_json").
@@ -268,13 +270,13 @@ curl -X POST http://localhost:9000/v1/images/generations \
 
 - `nanobananapro`: International sites only, supports `ratio` and `resolution`.
 - `nanobanana`: International sites only.
+- `jimeng-5.0`: China and Asia international sites (HK/JP/SG).
+- `jimeng-4.6`: China and Asia international sites (HK/JP/SG).
 - `jimeng-4.5`: Works on all sites, supports all 2k/4k ratios and intelligent_ratio. **(Default for all sites)**
 - `jimeng-4.1`: Works on all sites, supports all 2k/4k ratios and intelligent_ratio.
 - `jimeng-4.0`: Works on all sites.
 - `jimeng-3.1`: China site only.
 - `jimeng-3.0`: Works on all sites.
-- `jimeng-2.1`: China site only.
-- `jimeng-xl-pro`
 
 **Supported Ratios and Corresponding Resolutions**:
 | resolution | ratio | Resolution |
@@ -431,7 +433,7 @@ Generate a video from a text prompt (Text-to-Video) or from start/end frame imag
 - `duration` (number, optional): Video duration in seconds. Supported values vary by model:
   - `jimeng-video-veo3` / `jimeng-video-veo3.1`: `8` (fixed)
   - `jimeng-video-sora2`: `4` (default), `8`, `12`
-  - `jimeng-video-4.0-pro` / `jimeng-video-4.0`: `5` (default), `10`, `15`
+  - `jimeng-video-seedance-2.0`: `4`~`15` (any integer second, default `5`)
   - `jimeng-video-3.5-pro`: `5` (default), `10`, `12`
   - Other models: `5` (default), `10`
 - `file_paths` (array, optional): An array of image URLs to specify the **start frame** (1st element) and **end frame** (2nd element) of the video.
@@ -447,8 +449,7 @@ Generate a video from a text prompt (Text-to-Video) or from start/end frame imag
 
 **Supported Video Models**:
 
-- `jimeng-video-4.0-pro` - Seedance 2.0 Professional Edition, China site only, supports 15s duration **(Latest)**
-- `jimeng-video-4.0` - Seedance 2.0 Standard Edition, China site only, supports 15s duration **(Latest)**
+- `jimeng-video-seedance-2.0` - Seedance 2.0, China site only, supports 4~15s duration **(Latest)**
 - `jimeng-video-3.5-pro` - Professional Edition v3.5, works on all sites **(Default)**
 - `jimeng-video-veo3` - Veo3 model, Asia international sites only (HK/JP/SG), fixed 8s duration
 - `jimeng-video-veo3.1` - Veo3.1 model, Asia international sites only (HK/JP/SG), fixed 8s duration
