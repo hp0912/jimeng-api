@@ -4,6 +4,10 @@
 
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/) [![Docker](https://img.shields.io/badge/Docker-支持-blue.svg)](https://www.docker.com/) [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE) [![Telegram](https://img.shields.io/badge/Telegram-群组-blue.svg?logo=telegram)](https://t.me/jimeng_api)
 
+> ⭐ **如果这个项目对你有帮助，请给个 Star 支持一下！** 你的支持是我们持续更新的动力。
+>
+> 🔔 **Watch 本项目**以获取最新功能更新通知。
+>
 > 💬 **加入 Telegram 交流群**: [https://t.me/jimeng_api](https://t.me/jimeng_api) — 问题反馈、使用交流、功能讨论。
 
 ## ✨ 特性
@@ -17,6 +21,10 @@
 - 📊 **详细日志**: 结构化日志记录，便于调试
 - 🐳 **Docker支持**: 容器化部署，开箱即用
 - ⚙️ **日志级别控制**: 可通过配置文件动态调整日志输出级别
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=iptag/jimeng-api&type=Date)](https://star-history.com/#iptag/jimeng-api&Date)
 
 ## ⚠ 风险警告
 
@@ -462,7 +470,7 @@ A: 可以。现在支持直接上传本地文件。请参考上方的“本地�
 - `[file]` (file, 可选): 通过 `multipart/form-data` 方式上传的本地图片文件（最多2个），用于指定视频的**首帧**和**尾帧**。字段名可以任意，例如 `image1`。
 - `functionMode` (string, 可选): 生成模式。默认为 `"first_last_frames"`。支持的值：
   - `"first_last_frames"`（默认）：标准模式，根据图片数量自动判断文生视频/图生视频/首尾帧模式。
-  - `"omni_reference"`：全能模式。需要 `jimeng-video-seedance-2.0` 模型。通过指定字段名上传文件：`image_file_1`、`image_file_2`（图片）、`video_file`（视频），支持本地文件和网络URL。在 prompt 中使用 `@字段名` 引用素材。
+  - `"omni_reference"`：全能模式。需要 `jimeng-video-seedance-2.0` 模型。通过指定字段名上传文件：`image_file_1` ~ `image_file_9`（图片）、`video_file_1` ~ `video_file_3`（视频），支持本地文件和网络URL。在 prompt 中使用 `@字段名` 引用素材。
 - `response_format` (string, 可选): 响应格式，支持 `url` (默认) 或 `b64_json`。
 
 > **图片输入说明**:
@@ -475,22 +483,28 @@ A: 可以。现在支持直接上传本地文件。请参考上方的“本地�
 > **全能模式 (Omni Reference)**（新）:
 >
 > - 需要 `functionMode=omni_reference` 且 `model=jimeng-video-seedance-2.0`。
+> - **素材数量限制**：
+>   - 最多 **9 张图片**（`image_file_1` ~ `image_file_9`）
+>   - 最多 **3 个视频**（`video_file_1` ~ `video_file_3`）
+>   - 图片+视频总数不超过 **12 个**
+>   - 所有视频总时长不超过 **15 秒**
 > - **图片输入**支持三种方式（优先级从高到低）：
->   1. **本地文件上传**：通过 `multipart/form-data`，字段名为 `image_file_1`、`image_file_2`（如 curl `-F "image_file_1=@local.jpg"`）
+>   1. **本地文件上传**：通过 `multipart/form-data`，字段名为 `image_file_1` ~ `image_file_9`（如 curl `-F "image_file_1=@local.jpg"`）
 >   2. **表单字段传入 URL**：同样的字段名，值为 URL 字符串而非文件（如 curl `-F "image_file_1=https://..."`，无 `@` 前缀）。服务端会先下载图片再上传。
->   3. **`file_paths`/`filePaths` 数组**：在 JSON body 中传入 URL 数组，按顺序映射到 `image_file_1`/`image_file_2` 槽位。
+>   3. **`file_paths`/`filePaths` 数组**：在 JSON body 中传入 URL 数组，按顺序映射到 `image_file_1`/`image_file_2`... 槽位。
 > - 三种方式可以**自由混搭**——每个槽位由优先级最高的来源填充。
 > - **视频输入**支持两种方式（优先级从高到低）：
->   1. **本地文件上传**：通过 `multipart/form-data`，字段名为 `video_file`（如 curl `-F "video_file=@local.mp4"`）
->   2. **表单字段传入 URL**：同样的字段名，值为 URL 字符串而非文件（如 curl `-F "video_file=https://..."`，无 `@` 前缀）。服务端会先下载视频再上传。
-> - 至少提供1个素材（图片或视频），最多3个文件（2图片 + 1视频）。
-> - 在 `prompt` 中使用 `@字段名`（如 `@image_file_1`、`@video_file`）或 `@原始文件名` 引用素材，描述每个素材的作用。
+>   1. **本地文件上传**：通过 `multipart/form-data`，字段名为 `video_file_1` ~ `video_file_3`（如 curl `-F "video_file_1=@local.mp4"`）
+>   2. **表单字段传入 URL**：同样的字段名，值为 URL 字符串而非文件（如 curl `-F "video_file_1=https://..."`，无 `@` 前缀）。服务端会先下载视频再上传。
+> - 至少提供1个素材（图片或视频），最多12个文件。
+> - 在 `prompt` 中使用 `@字段名`（如 `@image_file_1`、`@video_file_1`）或 `@原始文件名` 引用素材，描述每个素材的作用。
 > - **注意**：使用 curl `-F` 参数时，prompt 值中的 `@` 符号会被解释为文件引用。请使用 `--form-string` 代替 `-F` 来发送 prompt 字段。
-> - Prompt 示例：`"@image_file_1作为首帧，@image_file_2作为尾帧，运动动作模仿@video_file"`
+> - Prompt 示例：`"@image_file_1作为首帧，@image_file_2作为尾帧，运动动作模仿@video_file_1"`
 
 **支持的视频模型**:
 
 - `jimeng-video-seedance-2.0` - Seedance 2.0，仅国内站支持，支持4~15秒时长，支持全能模式 (Omni Reference) **（最新）**
+- `jimeng-video-seedance-2.0-fast` - Seedance 2.0 Fast，仅国内站支持，支持4~15秒时长，支持全能模式 (Omni Reference)，速度更快
 - `jimeng-video-3.5-pro` - 专业版v3.5，国内/国际站均支持 **（默认）**
 - `jimeng-video-veo3` - Veo3模型，仅亚洲国际站 (HK/JP/SG) 支持，固定8秒时长
 - `jimeng-video-veo3.1` - Veo3.1模型，仅亚洲国际站 (HK/JP/SG) 支持，固定8秒时长
