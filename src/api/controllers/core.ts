@@ -349,7 +349,7 @@ export async function request(
         headers: headers,
         timeout: 45000, // 增加超时时间到45秒
         validateStatus: () => true, // 允许任何状态码
-        ..._.omit(options, "params", "headers"),
+        ..._.omit(options, "params", "headers", "noDefaultParams"),
         ...(proxyAgent ? { httpAgent: proxyAgent, httpsAgent: proxyAgent, proxy: false } : {}),
       });
 
