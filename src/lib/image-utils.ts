@@ -96,8 +96,41 @@ export async function fetchHighQualityVideoUrl(itemId: string, refreshToken: str
     const responseStr = JSON.stringify(result);
     logger.info(`get_local_item_list 响应大小: ${responseStr.length} 字符`);
 
-    // 策略1: 从结构化字段中提取视频URL
+    // 策略0（最优先）: 从 video_model 字段提取无水印视频URL
+    // video_model 是 JSON 字符串，其中 video_list.*.main_url 为 Base64 编码的无水印链接
     const itemList = result.item_list || result.local_item_list || [];
+    if (itemList.length > 0) {
+      const item = itemList[0];
+      const videoModelStr = item?.video?.video_model;
+      if (videoModelStr && typeof videoModelStr === "string") {
+        try {
+          const videoModel = JSON.parse(videoModelStr);
+          const videoList = videoModel?.video_list;
+          if (videoList && typeof videoList === "object") {
+            // 按清晰度优先级尝试提取：
+            // 4K(video_4) > 2K(video_3) > 1080p(video_2) > 720p(video_1)
+            // 目前只抓包到video_1
+            const priorityKeys = ["video_4", "video_3", "video_2", "video_1"];
+            for (const key of priorityKeys) {
+              const mainUrlB64 = videoList[key]?.main_url;
+              if (mainUrlB64 && typeof mainUrlB64 === "string") {
+                // Base64 解码得到真实无水印URL（Node.js 16+ 全局支持 atob）
+                const decodedUrl = atob(mainUrlB64);
+                if (decodedUrl.startsWith("http")) {
+                  const definition = videoList[key]?.definition || key;
+                  logger.info(`从video_model提取到无水印视频URL (${definition}): ${decodedUrl}`);
+                  return decodedUrl;
+                }
+              }
+            }
+          }
+        } catch (e) {
+          logger.warn(`解析video_model JSON失败: ${e.message}`);
+        }
+      }
+    }
+
+    // 策略1: 从结构化字段中提取视频URL（可能带水印，作为降级方案）
     if (itemList.length > 0) {
       const item = itemList[0];
       const videoUrl =
@@ -108,7 +141,7 @@ export async function fetchHighQualityVideoUrl(itemId: string, refreshToken: str
         item?.video?.url;
 
       if (videoUrl) {
-        logger.info(`从get_local_item_list结构化字段获取到高清视频URL: ${videoUrl}`);
+        logger.info(`从get_local_item_list结构化字段获取到高清视频URL(可能含水印): ${videoUrl}`);
         return videoUrl;
       }
     }
