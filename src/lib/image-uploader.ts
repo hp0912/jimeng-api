@@ -1,10 +1,30 @@
 import crypto from "crypto";
 import axios from "axios";
+import dns from "dns";
+import http from "http";
+import https from "https";
 import { RegionInfo, request } from "@/api/controllers/core.ts";
 import { RegionUtils } from "@/lib/region-utils.ts";
 import { createSignature } from "@/lib/aws-signature.ts";
 import logger from "@/lib/logger.ts";
 import util from "@/lib/util.ts";
+
+// 创建只返回 IPv4 地址的 lookup 函数
+function ipv4Lookup(
+  hostname: string,
+  options: dns.LookupOptions,
+  callback: (
+    err: NodeJS.ErrnoException | null,
+    address: string | dns.LookupAddress[],
+    family?: number,
+  ) => void,
+) {
+  return dns.lookup(hostname, { family: 4 }, callback);
+}
+
+// 创建 http/https agent
+const httpAgent = new http.Agent({ lookup: ipv4Lookup });
+const httpsAgent = new https.Agent({ lookup: ipv4Lookup });
 
 /**
  * 统一的图片上传模块
@@ -139,6 +159,8 @@ export async function uploadImageBuffer(
       uploadResponse = await axios({
         method: 'POST',
         url: uploadUrl,
+        httpAgent,
+        httpsAgent,
         headers: {
           'Accept': '*/*',
           'Accept-Language': 'zh-CN,zh;q=0.9',
